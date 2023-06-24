@@ -1,17 +1,18 @@
 const express = require('express');
 require('express-async-errors');
 const routes = require('./routes');
+const cors = require('./app/middlewares/cors');
+const errorHandler = require('./app/middlewares/errorHandler');
 
 const app = express();
 
 app.use(express.json());
+
+app.use(cors);
+
 app.use(routes);
-app.use((error, req, res, next) => {
-  console.log(error);
+app.use(errorHandler);
 
-  return res.status(500).json({ error: 'Internal server error' });
-});
-
-app.listen(3030, () => {
-  console.log('🔥 Server is running on port 3030');
+app.listen(5050, () => {
+  console.log('🔥 Server is running on port 5050');
 });
