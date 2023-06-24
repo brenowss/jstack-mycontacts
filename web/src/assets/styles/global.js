@@ -10,9 +10,8 @@ export default createGlobalStyle`
 
   body {
     font-size: 16px;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
+    min-height: 100%;
+    min-width: 100%;
     background: ${(props) => props.theme.colors.background};
   }
 
