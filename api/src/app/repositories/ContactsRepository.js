@@ -33,6 +33,7 @@ class ContactsRepository {
 
   async findAll(orderBy = 'ASC') {
     const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+    console.log(orderBy);
     const rows = await db.query(
       `SELECT contacts.*, categories.name AS category_name
         FROM contacts

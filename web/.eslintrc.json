@@ -16,6 +16,7 @@
     "react/react-in-jsx-scope": "off",
     "react/jsx-one-expression-per-line": "off",
     "import/prefer-default-export": "off",
+    "class-methods-use-this": "off",
     "comma-dangle": ["error", "never"]
   }
 }

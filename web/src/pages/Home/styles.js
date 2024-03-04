@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
-`;
+export const Container = styled.div``;
 
 export const Header = styled.header`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: ${(props) => (props.hasError ? 'flex-end' : 'space-between')};
   align-items: center;
+  margin-top: 32px;
+  border-bottom: 2px solid ${(props) => props.theme.colors.gray[100]};
+  padding-bottom: 16px;
 
   strong {
     font-size: 24px;
@@ -30,23 +32,25 @@ export const Header = styled.header`
   }
 `;
 
-export const ListContainer = styled.div`
+export const ListHeader = styled.header`
   margin-top: 24px;
+  margin-bottom: 8px;
 
-  header {
-    margin-bottom: 8px;
+  button {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
 
-    button {
-      background: transparent;
-      border: none;
-      display: flex;
-      align-items: center;
+    span {
+      margin-right: 8px;
+      font-weight: bold;
+      color: ${(props) => props.theme.colors.primary.main};
+    }
 
-      span {
-        margin-right: 8px;
-        font-weight: bold;
-        color: ${(props) => props.theme.colors.primary.main};
-      }
+    img {
+      transform: ${(props) => (props.orderBy === 'asc' ? 'rotateX(180deg)' : 'rotateX(0deg)')};
+      transition: all 0.2s ease-in;
     }
   }
 `;
@@ -116,6 +120,22 @@ export const InputSearchContainer = styled.div`
 
     &::placeholder {
       color: ${(props) => props.theme.colors.gray[200]};
+    }
+  }
+`;
+
+export const ErrorContainer = styled.div`
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  .details {
+    strong {
+      display: block;
+      font-size: 22px;
+      color: ${(props) => props.theme.colors.danger.main};
+      margin-bottom: 8px;
     }
   }
 `;
