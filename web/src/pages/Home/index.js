@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useCallback, useEffect, useMemo, useState
+} from 'react';
 import {
   Container, Header, Card, InputSearchContainer, ListHeader, ErrorContainer
 } from './styles';
@@ -10,8 +12,10 @@ import Delete from '../../assets/images/icons/trash.svg';
 import Error from '../../assets/images/icons/sad.svg';
 
 import Loader from '../../components/Loader';
-import ContactsService from '../../services/ContactsService';
+// import ContactsService from '../../services/ContactsService';
 import Button from '../../components/Button';
+
+import EmptyBox from '../../assets/images/empty-box.svg';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
@@ -20,17 +24,18 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  async function fetchContacts() {
+  const fetchContacts = useCallback(async () => {
     try {
       setIsLoading(true);
-      const contactsList = await ContactsService.listContacts(orderBy);
-      setContacts(contactsList);
+      // const contactsList = await ContactsService.listContacts(orderBy);
+      setHasError(false);
+      setContacts([]);
     } catch (error) {
       setHasError(true);
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [orderBy]);
 
   function handleToggleOrderBy() {
     setOrderBy((prevState) => (prevState === 'asc' ? 'desc' : 'asc'));
@@ -51,7 +56,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchContacts();
-  }, [orderBy]);
+  }, [fetchContacts]);
 
   return (
     <Container>
@@ -59,18 +64,32 @@ export default function Home() {
 
       <Loader isLoading={isLoading} />
 
-      <InputSearchContainer>
-        <input
-          type="text"
-          placeholder="Pesquise pelo nome"
-          value={searchTerm}
-          onChange={handleChangeSearchTerm}
-        />
-      </InputSearchContainer>
+      {
+        contacts.length > 0 && (
+          <InputSearchContainer>
+            <input
+              type="text"
+              placeholder="Pesquise pelo nome"
+              value={searchTerm}
+              onChange={handleChangeSearchTerm}
+            />
+          </InputSearchContainer>
+        )
+      }
 
-      <Header hasError={hasError}>
+      <Header justifyContent={
+      // eslint-disable-next-line no-nested-ternary
+        hasError
+          ? 'flex-end'
+          : (
+            contacts.length > 0
+              ? 'space-between'
+              : 'center'
+          )
+}
+      >
         {
-          !hasError && (
+          (!hasError && contacts.length > 0) && (
             <strong>{filteredContacts.length} {filteredContacts.length === 1 ? 'contato' : 'contatos'}</strong>
           )
         }
@@ -90,7 +109,22 @@ export default function Home() {
         )
       }
 
-      {
+      {!hasError && (
+        <>
+          {
+          contacts.length < 1 && (
+            <img
+              src={EmptyBox}
+              alt="Empty box"
+              style={{
+                width: 200,
+                margin: '0 auto',
+                display: 'block'
+              }}
+            />
+          )
+        }
+          {
         filteredContacts.length > 0 && (
           <ListHeader orderBy={orderBy}>
             <button type="button" onClick={handleToggleOrderBy}>
@@ -101,7 +135,7 @@ export default function Home() {
         )
       }
 
-      {filteredContacts
+          {filteredContacts
            && filteredContacts.map((contact) => (
              <Card key={contact.id}>
                <div className="info">
@@ -128,6 +162,8 @@ export default function Home() {
                </div>
              </Card>
            ))}
+        </>
+      )}
     </Container>
   );
 }

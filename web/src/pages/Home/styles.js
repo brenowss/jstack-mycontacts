@@ -5,7 +5,7 @@ export const Container = styled.div``;
 export const Header = styled.header`
   width: 100%;
   display: flex;
-  justify-content: ${(props) => (props.hasError ? 'flex-end' : 'space-between')};
+  justify-content: ${({ justifyContent }) => (justifyContent || 'space-between')};
   align-items: center;
   margin-top: 32px;
   border-bottom: 2px solid ${(props) => props.theme.colors.gray[100]};

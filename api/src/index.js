@@ -13,6 +13,6 @@ app.use(cors);
 app.use(routes);
 app.use(errorHandler);
 
-app.listen(5050, () => {
-  console.log('🔥 Server is running on port 5050');
+app.listen(5151, () => {
+  console.log('🔥 Server is running on port 5151');
 });
