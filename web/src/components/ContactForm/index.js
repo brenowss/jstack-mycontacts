@@ -17,6 +17,7 @@ export default function ContactForm({ buttonLabel, handleSubmit }) {
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [categories, setCategories] = useState([]);
   const [categoryId, setCategoryId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     setError, getErrorMessageByFieldName, removeErrorByFieldName, errors
@@ -54,15 +55,19 @@ export default function ContactForm({ buttonLabel, handleSubmit }) {
     setPhone(formatPhone(e.target.value));
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
 
-    handleSubmit({
+    setIsSubmitting(true);
+
+    await handleSubmit({
       name,
       email,
       phone: phone.replace(/\D/g, ''),
       categoryId
     });
+
+    setIsSubmitting(false);
   }
 
   useEffect(() => {
@@ -87,6 +92,7 @@ export default function ContactForm({ buttonLabel, handleSubmit }) {
           placeholder="Nome *"
           onChange={(e) => handleNameChange(e)}
           error={getErrorMessageByFieldName('name')}
+          disabled={isSubmitting}
         />
       </FormGroup>
 
@@ -100,6 +106,8 @@ export default function ContactForm({ buttonLabel, handleSubmit }) {
           placeholder="E-mail"
           onChange={(e) => handleEmailChange(e)}
           error={getErrorMessageByFieldName('email')}
+          disabled={isSubmitting}
+
         />
       </FormGroup>
 
@@ -111,6 +119,8 @@ export default function ContactForm({ buttonLabel, handleSubmit }) {
           maxLength={15}
           placeholder="Telefone"
           onChange={(e) => handlePhoneChange(e)}
+          disabled={isSubmitting}
+
         />
       </FormGroup>
 
@@ -118,7 +128,7 @@ export default function ContactForm({ buttonLabel, handleSubmit }) {
         <Select
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          disabled={isLoadingCategories}
+          disabled={isLoadingCategories || isSubmitting}
         >
           <option value="">Sem Categoria</option>
           {categories.map((item) => (
@@ -130,7 +140,7 @@ export default function ContactForm({ buttonLabel, handleSubmit }) {
       </FormGroup>
 
       <ButtonContainer>
-        <Button type="submit" disabled={!isFormValid}>
+        <Button type="submit" disabled={!isFormValid} isLoading={isSubmitting}>
           {buttonLabel}
         </Button>
       </ButtonContainer>

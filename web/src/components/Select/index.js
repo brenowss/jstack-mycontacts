@@ -21,5 +21,6 @@ export default styled.select`
     background: ${(props) => props.theme.colors.gray[100]};
     cursor: not-allowed;
     border-color: ${(props) => props.theme.colors.gray[100]};
+    opacity: 1;
   }
 `;

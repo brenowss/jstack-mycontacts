@@ -17,6 +17,12 @@ export default styled.input`
     border-color: ${(props) => props.theme.colors.primary.main};
   }
 
+  &:disabled {
+    background: ${(props) => props.theme.colors.gray[100]};
+    cursor: not-allowed;
+    border-color: ${(props) => props.theme.colors.gray[100]};
+  }
+
   ${(props) => props.error && css`
     border-color: ${props.theme.colors.danger.main} !important;
     color: ${props.theme.colors.danger.main} !important;
