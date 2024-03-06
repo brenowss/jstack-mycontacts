@@ -5,29 +5,63 @@ class HttpClient {
     this.baseURL = baseURL;
   }
 
-  async get(path) {
-    const response = await fetch(`${this.baseURL}${path}`);
+  async makeRequest(path, options) {
+    const headers = new Headers();
+    if (options.body) {
+      headers.append('Content-Type', 'application/json');
+    }
+
+    if (options.headers) {
+      Object.entries(options.headers).forEach(([key, value]) => {
+        headers.append(key, value);
+      });
+    }
+
+    const response = await fetch(`${this.baseURL}${path}`, {
+      method: options.method,
+      body: JSON.stringify(options.body),
+      headers
+    });
 
     const contentType = response.headers.get('Content-Type');
-    let body = null;
+    let responseBody = null;
 
     if (contentType.includes('application/json')) {
-      body = await response.json();
+      responseBody = await response.json();
     }
 
     if (response.ok) {
-      return body;
+      return responseBody;
     }
 
-    throw new APIError(response, body);
+    throw new APIError(response, responseBody);
   }
 
-  async post(path, body) {
-    const response = await fetch(`${this.baseURL}${path}`, {
-      method: 'POST',
-      body: JSON.stringify(body)
+  get(path, options) {
+    return this.makeRequest(path, {
+      method: 'GET',
+      headers: options?.headers
     });
-    return response.json();
+  }
+
+  post(path, options) {
+    return this.makeRequest(path, {
+      method: 'POST',
+      body: options?.body,
+      headers: options?.headers
+    });
+  }
+
+  put(path, options) {
+    return this.makeRequest(path, { method: 'PUT', body: options.body });
+  }
+
+  delete(path) {
+    return this.makeRequest(path, { method: 'DELETE' });
+  }
+
+  patch(path, options) {
+    return this.makeRequest(path, { method: 'PATCH', body: options.body });
   }
 }
 

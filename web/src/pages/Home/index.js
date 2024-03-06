@@ -3,7 +3,9 @@ import {
   useCallback, useEffect, useMemo, useState
 } from 'react';
 import {
-  Container, Header, Card, InputSearchContainer, ListHeader, ErrorContainer
+  Container, Header, Card, InputSearchContainer, ListHeader, ErrorContainer,
+  EmptyListContainer,
+  SearchNotFoundContainer
 } from './styles';
 
 import Arrow from '../../assets/images/icons/arrow.svg';
@@ -12,10 +14,11 @@ import Delete from '../../assets/images/icons/trash.svg';
 import Error from '../../assets/images/icons/sad.svg';
 
 import Loader from '../../components/Loader';
-// import ContactsService from '../../services/ContactsService';
+import ContactsService from '../../services/ContactsService';
 import Button from '../../components/Button';
 
 import EmptyBox from '../../assets/images/empty-box.svg';
+import MagnifierQuestion from '../../assets/images/magnifier-question.svg';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
@@ -27,9 +30,9 @@ export default function Home() {
   const fetchContacts = useCallback(async () => {
     try {
       setIsLoading(true);
-      // const contactsList = await ContactsService.listContacts(orderBy);
+      const contactsList = await ContactsService.listContacts(orderBy);
       setHasError(false);
-      setContacts([]);
+      setContacts(contactsList);
     } catch (error) {
       setHasError(true);
     } finally {
@@ -111,29 +114,43 @@ export default function Home() {
 
       {!hasError && (
         <>
-          {
-          contacts.length < 1 && (
+          {(contacts.length < 1 && !isLoading) && (
+          <EmptyListContainer>
             <img
               src={EmptyBox}
               alt="Empty box"
-              style={{
-                width: 200,
-                margin: '0 auto',
-                display: 'block'
-              }}
             />
-          )
-        }
+
+            <p>
+              Você ainda não possui contatos cadastrados!
+              Clique no botão <strong>Novo contato</strong> para adicionar seu primeiro contato.
+            </p>
+          </EmptyListContainer>
+          )}
+
           {
-        filteredContacts.length > 0 && (
+            contacts.length > 0 && filteredContacts.length < 1 && (
+              <SearchNotFoundContainer>
+                <img
+                  src={MagnifierQuestion}
+                  alt="Magnifier question"
+                />
+
+                <span>
+                  Nenhum resultado encontrado para <strong>{searchTerm}</strong>
+                </span>
+              </SearchNotFoundContainer>
+            )
+          }
+
+          {filteredContacts.length > 0 && (
           <ListHeader orderBy={orderBy}>
             <button type="button" onClick={handleToggleOrderBy}>
               <span>Nome</span>
               <img src={Arrow} alt="Arrow" />
             </button>
           </ListHeader>
-        )
-      }
+          )}
 
           {filteredContacts
            && filteredContacts.map((contact) => (
