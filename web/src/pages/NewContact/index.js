@@ -1,8 +1,8 @@
-/* eslint-disable no-alert */
 /* eslint-disable react/jsx-no-bind */
 import ContactForm from '../../components/ContactForm';
 import PageHeader from '../../components/PageHeader';
 import ContactsService from '../../services/ContactsService';
+import toast from '../../utils/toast';
 
 export default function NewContact() {
   async function handleSubmit(data) {
@@ -16,10 +16,10 @@ export default function NewContact() {
       const response = await ContactsService.createContact(newData);
 
       if (response) {
-        alert('Contato cadastrado com sucesso!');
+        toast({ text: 'Contato cadastrado com sucesso!', type: 'success' });
       }
     } catch (error) {
-      alert('Ocorreu um erro ao cadastrar o contato');
+      toast({ text: 'Ocorreu um erro ao cadastrar o contato!', type: 'danger' });
     }
   }
 
