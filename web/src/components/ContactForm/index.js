@@ -68,6 +68,10 @@ export default function ContactForm({ buttonLabel, handleSubmit }) {
     });
 
     setIsSubmitting(false);
+    setName('');
+    setEmail('');
+    setPhone('');
+    setCategoryId('');
   }
 
   useEffect(() => {
