@@ -19,6 +19,7 @@ import Button from '../../components/Button';
 
 import EmptyBox from '../../assets/images/empty-box.svg';
 import MagnifierQuestion from '../../assets/images/magnifier-question.svg';
+import formatPhone from '../../utils/formatPhone';
 
 export default function Home() {
   const [contacts, setContacts] = useState([]);
@@ -166,7 +167,7 @@ export default function Home() {
                  </div>
 
                  <span>{contact?.email}</span>
-                 <span>{contact?.phone}</span>
+                 <span>{formatPhone(contact?.phone)}</span>
                </div>
 
                <div className="actions">

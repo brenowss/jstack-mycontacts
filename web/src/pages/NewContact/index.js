@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-no-bind */
+import { useRef } from 'react';
 import ContactForm from '../../components/ContactForm';
 import PageHeader from '../../components/PageHeader';
 import ContactsService from '../../services/ContactsService';
 import toast from '../../utils/toast';
 
 export default function NewContact() {
+  const contactFormRef = useRef();
   async function handleSubmit(data) {
     try {
       const newData = {
@@ -31,7 +33,7 @@ export default function NewContact() {
     <div>
       <PageHeader title="Novo contato" />
 
-      <ContactForm buttonLabel="Cadastrar" handleSubmit={handleSubmit} />
+      <ContactForm ref={contactFormRef} buttonLabel="Cadastrar" handleSubmit={handleSubmit} />
     </div>
   );
 }

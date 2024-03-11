@@ -1,5 +1,5 @@
 import { useParams, useHistory } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ContactForm from '../../components/ContactForm';
 import PageHeader from '../../components/PageHeader';
 import ContactsService from '../../services/ContactsService';
@@ -10,19 +10,42 @@ export default function EditContact() {
   const params = useParams();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
+  const [contactName, setContactName] = useState('');
+
+  const formRef = useRef();
 
   const { id } = params;
 
-  function handleSubmit(data) {
-    console.log(data);
+  async function handleSubmit(data) {
+    try {
+      const newData = {
+        category_id: data.categoryId,
+        email: data.email,
+        name: data.name,
+        phone: data.phone
+      };
+      const response = await ContactsService.updateContact(id, newData);
+
+      setContactName(data.name);
+      if (response) {
+        toast({
+          text: 'Contato atualizado com sucesso!',
+          type: 'success',
+          time: 3000
+        });
+      }
+    } catch (error) {
+      toast({ text: 'Ocorreu um erro ao atualizar o contato!', type: 'danger' });
+    }
   }
 
   useEffect(() => {
     async function loadContact() {
       try {
         const response = await ContactsService.getContactById(id);
-        console.log(response);
+        formRef.current.setFieldsValues(response);
         setIsLoading(false);
+        setContactName(response.name);
       } catch {
         history.push('/');
         toast({
@@ -37,11 +60,18 @@ export default function EditContact() {
 
   return (
     <>
-      {isLoading && <Loader />}
+      {isLoading && <Loader isLoading={isLoading} />}
 
-      <PageHeader title="Editar Breno" />
+      {
+        contactName ? (
+          <PageHeader title={`Editar ${contactName}`} />
+        ) : (
+          <PageHeader title="Carregando" />
+        )
+}
 
       <ContactForm
+        ref={formRef}
         buttonLabel="Salvar alterações"
         handleSubmit={(data) => handleSubmit(data)}
       />
