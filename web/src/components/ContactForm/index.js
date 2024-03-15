@@ -11,13 +11,14 @@ import isEmailValid from '../../utils/isEmailValid';
 import formatPhone from '../../utils/formatPhone';
 import useErrors from '../../hooks/useErrors';
 import CategoriesService from '../../services/CategoriesService';
+import useSafeAsyncState from '../../hooks/useSafeAsyncState';
 
 const ContactForm = forwardRef(({ buttonLabel, handleSubmit }, ref) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useSafeAsyncState([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useSafeAsyncState(true);
   const [categoryId, setCategoryId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -92,8 +93,9 @@ const ContactForm = forwardRef(({ buttonLabel, handleSubmit }, ref) => {
       try {
         const categoriesList = await CategoriesService.listCategories();
         setCategories(categoriesList);
+      } catch { /* empty */ } finally {
         setIsLoadingCategories(false);
-      } catch { /* empty */ }
+      }
     }
 
     loadCategories();
