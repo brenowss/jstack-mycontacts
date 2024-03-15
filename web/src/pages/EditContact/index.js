@@ -5,6 +5,7 @@ import PageHeader from '../../components/PageHeader';
 import ContactsService from '../../services/ContactsService';
 import Loader from '../../components/Loader';
 import toast from '../../utils/toast';
+import useIsMounted from '../../hooks/useIsMounted';
 
 export default function EditContact() {
   const params = useParams();
@@ -13,6 +14,7 @@ export default function EditContact() {
   const [contactName, setContactName] = useState('');
 
   const formRef = useRef();
+  const isMounted = useIsMounted();
 
   const { id } = params;
 
@@ -43,20 +45,27 @@ export default function EditContact() {
     async function loadContact() {
       try {
         const response = await ContactsService.getContactById(id);
-        formRef.current.setFieldsValues(response);
-        setIsLoading(false);
-        setContactName(response.name);
+
+        if (isMounted()) {
+          formRef.current.setFieldsValues(response);
+
+          setIsLoading(false);
+          setContactName(response.name);
+        }
       } catch {
-        history.push('/');
-        toast({
-          text: 'Contato não encontrado',
-          type: 'danger'
-        });
+        if (isMounted()) {
+          history.push('/');
+
+          toast({
+            text: 'Contato não encontrado',
+            type: 'danger'
+          });
+        }
       }
     }
 
     loadContact();
-  }, [id, history]);
+  }, [id, history, isMounted]);
 
   return (
     <>
