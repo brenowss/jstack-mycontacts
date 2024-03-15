@@ -93,13 +93,12 @@ const ContactForm = forwardRef(({ buttonLabel, handleSubmit }, ref) => {
       try {
         const categoriesList = await CategoriesService.listCategories();
         setCategories(categoriesList);
-      } catch { /* empty */ } finally {
         setIsLoadingCategories(false);
-      }
+      } catch { /* empty */ }
     }
 
     loadCategories();
-  }, []);
+  }, [setCategories, setIsLoadingCategories]);
 
   return (
     <Form onSubmit={(e) => onSubmit(e)} noValidate>
