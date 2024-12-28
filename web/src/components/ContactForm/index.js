@@ -33,7 +33,7 @@ const ContactForm = forwardRef(({ buttonLabel, handleSubmit }, ref) => {
       setName(data.name ?? '');
       setEmail(data.email ?? '');
       setPhone(formatPhone(data.phone ?? ''));
-      setCategoryId(data.category_id ?? '');
+      setCategoryId(data.category.id ?? '');
     },
     resetFields: () => {
       setName('');
@@ -92,9 +92,11 @@ const ContactForm = forwardRef(({ buttonLabel, handleSubmit }, ref) => {
     async function loadCategories() {
       try {
         const categoriesList = await CategoriesService.listCategories();
-        setCategories(categoriesList);
         setIsLoadingCategories(false);
-      } catch { /* empty */ }
+        setCategories(categoriesList);
+      } catch (error) {
+        setIsLoadingCategories(false);
+      }
     }
 
     loadCategories();

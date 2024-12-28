@@ -22,13 +22,7 @@ export default function EditContact() {
 
   async function handleSubmit(data) {
     try {
-      const newData = {
-        category_id: data.categoryId,
-        email: data.email,
-        name: data.name,
-        phone: data.phone
-      };
-      const response = await ContactsService.updateContact(id, newData);
+      const response = await ContactsService.updateContact(id, data);
 
       setContactName(data.name);
       if (response) {
