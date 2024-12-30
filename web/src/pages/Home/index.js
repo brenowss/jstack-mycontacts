@@ -30,11 +30,17 @@ export default function Home() {
     handleConfirmDeleteContact
   } = useHome();
 
+  const hasContacts = contacts.length > 0;
+  const isListEmpty = !hasError && (!hasContacts && !isLoading);
+  const isSearchEmpty = !hasError && (hasContacts && filteredContacts.length < 1);
+
   return (
     <Container>
       <Loader isLoading={isLoading} />
 
-      <InputSearch value={searchTerm} onChange={handleChangeSearchTerm} />
+      {hasContacts && (
+        <InputSearch value={searchTerm} onChange={handleChangeSearchTerm} />
+      )}
 
       <Header
         contactsLength={contacts.length}
@@ -42,26 +48,12 @@ export default function Home() {
         hasError={hasError}
       />
 
-      {
-        hasError && (
-          <ErrorStatus
-            onRefetch={handleRefetch}
-          />
-        )
-      }
+      {hasError && <ErrorStatus onRefetch={handleRefetch} />}
+      {isListEmpty && <EmptyList />}
+      {isSearchEmpty && <SearchNotFound searchTerm={searchTerm} />}
 
-      {!hasError && (
+      {hasContacts && (
         <>
-          {(contacts.length < 1 && !isLoading) && (
-            <EmptyList />
-          )}
-
-          {
-            contacts.length > 0 && filteredContacts.length < 1 && (
-              <SearchNotFound searchTerm={searchTerm} />
-            )
-          }
-
           <ContactsList
             filteredContacts={filteredContacts}
             orderBy={orderBy}
