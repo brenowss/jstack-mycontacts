@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import Button from '../Button';
 import { Container, Footer, Overlay } from './styles';
 import ReactPortal from '../ReactPortal';
+import useAnimatedUnmount from '../../hooks/useAnimatedUnmount';
 
 export default function Modal({
   open,
@@ -14,7 +15,9 @@ export default function Modal({
   onConfirm,
   onCancel
 }) {
-  if (!open) {
+  const { shouldRender, componentRef } = useAnimatedUnmount(open);
+
+  if (!shouldRender) {
     return null;
   }
 
@@ -28,8 +31,8 @@ export default function Modal({
 
   return (
     <ReactPortal containerId="modal-root">
-      <Overlay>
-        <Container danger={danger}>
+      <Overlay isLeaving={!open} ref={componentRef}>
+        <Container danger={danger} isLeaving={!open}>
           <h1>{title}</h1>
 
           {

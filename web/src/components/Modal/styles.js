@@ -1,4 +1,24 @@
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
+
+const scaleIn = keyframes`
+  from { transform: scale(0.8); }
+  to { transform: scale(1); }
+`;
+
+const scaleOut = keyframes`
+  from { transform: scale(1); }
+  to { transform: scale(0.8); }
+`;
 
 export const Overlay = styled.div`
   background: rgba(0, 0, 0, 0.6);
@@ -8,19 +28,25 @@ export const Overlay = styled.div`
   height: 100%;
   top: 0;
   left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${fadeIn} 0.1s ease-in;
+
+  ${({ isLeaving }) => isLeaving && css`animation: ${fadeOut} 0.2s;`}
 `;
 
 export const Container = styled.div`
   position: absolute;
-  top: 50%;
-  left: 50%;
   width: 100%;
   max-width: 450px;
   background: #fff;
   border-radius: 4px;
   padding: 24px;
-  transform: translate(-50%, -50%);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.04);
+  animation: ${scaleIn} 0.2s;
+
+  ${({ isLeaving }) => isLeaving && css`animation: ${scaleOut} 0.2s;`}
 
   & > h1 {
     font-weight: bold;

@@ -56,7 +56,7 @@ export default function ContactsList({
 
 ContactsList.propTypes = {
   filteredContacts: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
     name: PropTypes.string,
     email: PropTypes.string,
     phone: PropTypes.string,
