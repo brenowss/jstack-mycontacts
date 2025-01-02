@@ -77,6 +77,11 @@ export default function useContactForm(handleSubmit, ref) {
       categoryId
     });
 
+    setName('');
+    setEmail('');
+    setPhone('');
+    setCategoryId('');
+
     setIsSubmitting(false);
   }
 

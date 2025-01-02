@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Container } from './styles';
 import XCircleIcon from '../../../assets/images/icons/x-circle.svg';
 import CheckCircleIcon from '../../../assets/images/icons/check-circle.svg';
@@ -8,29 +8,13 @@ export default function ToastMessage({
   message,
   isLeaving,
   onRemoveMessage,
-  onAnimationEnd
+  containerRef
 }) {
   const { text, type } = message;
-  const containerRef = useRef(null);
 
   function handleRemoveToast() {
     onRemoveMessage(message.id);
   }
-
-  useEffect(() => {
-    function handleAnimationEnd() {
-      onAnimationEnd(message.id);
-    }
-
-    const elementRef = containerRef.current;
-    if (isLeaving) {
-      elementRef.addEventListener('animationend', handleAnimationEnd);
-    }
-
-    return () => {
-      elementRef.removeEventListener('animationend', handleAnimationEnd);
-    };
-  }, [isLeaving]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -67,5 +51,8 @@ ToastMessage.propTypes = {
   }).isRequired,
   isLeaving: PropTypes.bool.isRequired,
   onRemoveMessage: PropTypes.func.isRequired,
-  onAnimationEnd: PropTypes.func.isRequired
+  containerRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+  ]).isRequired
 };

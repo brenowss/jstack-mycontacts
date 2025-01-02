@@ -6,11 +6,9 @@ import useAnimatedList from '../../../hooks/useAnimatedList';
 
 export default function ToastContainer() {
   const {
-    items: messages,
+    renderList,
     setItems: setMessages,
-    pendingRemovalitemsIds,
-    handleRemoveItem,
-    handleAnimationEnd
+    handleRemoveItem
   } = useAnimatedList();
 
   useEffect(() => {
@@ -25,17 +23,17 @@ export default function ToastContainer() {
     return () => {
       toastEventManager.removeListener('toast', handleAddToast);
     };
-  }, []);
+  }, [setMessages]);
 
   return (
     <Container>
-      {messages.map((message) => (
+      {renderList((message, { isLeaving, containerRef }) => (
         <ToastMessage
           key={message.id}
           message={message}
           onRemoveMessage={handleRemoveItem}
-          isLeaving={pendingRemovalitemsIds.includes(message.id)}
-          onAnimationEnd={handleAnimationEnd}
+          isLeaving={isLeaving}
+          containerRef={containerRef}
         />
       ))}
     </Container>
